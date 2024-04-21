@@ -27,7 +27,6 @@ class PrioritizedQueue(_PriorityQueue, Frontier):
         Frontier.__init__(self)
 
     def put(self, value):
-        # value = (item, priority)
         _PriorityQueue.put(self, (value[1], value[0]))
 
     def get(self):

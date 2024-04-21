@@ -20,7 +20,14 @@ class Capa:
 
     def get_caras(self):
         return self.caras
-
+    
+    def esta_armada(self):
+        color = self.caras[1][1].get_color()
+        for i in range(0, 3):
+            for j in range(0, 3):
+                if self.caras[i][j].get_color() != color:
+                    return False
+        return True
 
 class Cubo:
     def __init__(self, c1, c2, c3, c4, c5, c6):
@@ -76,59 +83,53 @@ class Cubo:
 
     def Bp(self):
         self.Mover(["L", "U", "R", "D"], [":", 0, ":", 2], [0, ":", 2, ":"], [-1, 1, -1, 1], "B", 1)
+
+    def esta_armado(self):
+        for clave, valor in self.capas.items():
+            if self.capas[clave].esta_armada() != True:
+                return False
+        return True
     
+    def copiar(self):
+        return copy.deepcopy(self)
+    
+class Lector_txt():
+    def __init__(self) -> None:
+        pass
 
+    def cargar_txt(self, archivo):
+        contadores = {'G': 0, 'O': 0, 'W': 0, 'R': 0, 'Y': 0, 'B': 0}
+        with open(archivo, "r") as file:
+            lineas = file.readlines()
 
-capa1 = Capa("G1", "G2", "G3", "G4", "G5", "G6", "G7", "G8", "G9")
-capa2 = Capa("O1", "O2", "O3", "O4", "O5", "O6", "O7", "O8", "O9")
-capa3 = Capa("W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9")
-capa4 = Capa("R1", "R2", "R3", "R4", "R5", "R6", "R7", "R8", "R9")
-capa5 = Capa("Y1", "Y2", "Y3", "Y4", "Y5", "Y6", "Y7", "Y8", "Y9")
-capa6 = Capa("B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9")
+        capas_leidas = []
 
-cubo = Cubo(capa1, capa2, capa3, capa4, capa5, capa6)
+        for linea in lineas:
+            letras = list(linea.strip())
+            if len(letras)!=9:
+                print("Error: Se esperaban 9 elementos en cada fila")
+                return
+            capa = Capa(*letras)
+            capas_leidas.append(capa)
+            for letra in letras:
+                contadores[letra] += 1
 
+        for letra, cantidad in contadores.items():
+            if cantidad != 9:
+                print("Error: Se esperaban 9 elementos de la letra", letra, "en el archivo.")
+                return None
 
-# capa11 = Capa('R', 'Y', 'B', 'G', 'G', 'R', 'W', 'O', 'Y')
-# capa12 = Capa('R', 'R', 'B', 'W', 'Y', 'O', 'O', 'B', 'O')
-# capa13 = Capa('B', 'Y', 'R', 'G', 'O', 'Y', 'Y', 'R', 'O')
-# capa14 = Capa('Y', 'G', 'W', 'W', 'W', 'B', 'O', 'W', 'G')
-# capa15 = Capa('G', 'W', 'G', 'O', 'R', 'G', 'B', 'R', 'Y')
-# capa16 = Capa('G', 'O', 'W', 'Y', 'B', 'B', 'R', 'B', 'W')
-
-# cubo2 = Cubo(capa11, capa12, capa13, capa14, capa15, capa16)
-
-
-
-# cubo2.L()
-# cubo2.U()
-# cubo2.U()
-# cubo2.Fp()
-# cubo2.B()
-# cubo2.B()
-# cubo2.Rp()
-# cubo2.F()
-# cubo2.F()
-# cubo2.Lp()
-# cubo2.Dp()
-# cubo2.F()
-# cubo2.F()
-# cubo2.L()
-# cubo2.U()
-# cubo2.R()
-# cubo2.R()
-# cubo2.B()
-# cubo2.U()
-# cubo2.U()
-# cubo2.L()
-# cubo2.L()
-# cubo2.B()
-# cubo2.B()
-# cubo2.D()
-# cubo2.B()
-# cubo2.B()
-# cubo2.Dp()
-# cubo2.B()
-# cubo2.B()
-
-# cubo2.imprimir()
+        if len(capas_leidas) != 6:
+            print("Error: Se esperaban 6 capas en el archivo.")
+            return None
+        
+        return capas_leidas
+    
+    def guardar_txt(self, cubo, archivo_salida):
+        with open(archivo_salida, "w") as file:
+            for letra in ["F", "L", "U", "R", "D", "B"]:
+                capa = cubo.capas[letra]
+                for fila in capa.caras:
+                    for cara in fila:
+                        file.write(cara.get_color())
+                file.write("\n")
