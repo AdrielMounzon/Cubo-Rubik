@@ -5,12 +5,21 @@ class Cara:
     def __init__(self, color):
         self.color = color
 
+    def __eq__(self, other):
+        if(isinstance(other, Cara)):
+            return self.color == other.color
+
     def get_color(self):
         return self.color
     
 class Capa:
     def __init__(self, c1, c2, c3, c4, c5, c6, c7, c8, c9):
         self.caras = numpy.array([[Cara(c1), Cara(c2), Cara(c3)], [Cara(c4), Cara(c5), Cara(c6)], [Cara(c7), Cara(c8), Cara(c9)]])
+
+    def __eq__(self, other):
+            if isinstance(other, Capa):
+                return numpy.array_equal(self.caras, other.caras)
+            return False
 
     def imprimir(self):
         for fila in self.caras:
@@ -28,10 +37,27 @@ class Capa:
                 if self.caras[i][j].get_color() != color:
                     return False
         return True
+    
+    def piezas_desordenadas(self):
+        color = self.caras[1][1].get_color()
+        cantidad = 0
+        for i in range(0, 3):
+            for j in range(0, 3):
+                if self.caras[i][j].get_color() != color:
+                    cantidad+=1
+        return cantidad
 
 class Cubo:
     def __init__(self, c1, c2, c3, c4, c5, c6):
         self.capas = {"F":c1, "L":c2, "U":c3, "R":c4, "D":c5, "B":c6}
+
+    def __eq__(self, other):
+        if isinstance(other, Cubo):
+            for letra in ["F", "L", "U", "R", "D", "B"]:
+                if self.capas[letra] != other.capas[letra]:
+                    return False
+            return True
+        return False
     
     def imprimir(self):
         for letra, capa in self.capas.items():
@@ -92,6 +118,14 @@ class Cubo:
     
     def copiar(self):
         return copy.deepcopy(self)
+    
+    def heuristica(self):
+        cantidad = 0
+        for clave, valor in self.capas.items():
+            cantidad += self.capas[clave].piezas_desordenadas() 
+        return cantidad
+
+
     
 class Lector_txt():
     def __init__(self) -> None:

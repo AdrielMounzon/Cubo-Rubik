@@ -8,6 +8,7 @@ if capas_desarmado:
 cubo_desarmado.U()
 cubo_desarmado.Rp()
 cubo_desarmado.F()
+cubo_desarmado.Dp()
 
 
 lector.guardar_txt(cubo_desarmado, "desarmado.txt")
