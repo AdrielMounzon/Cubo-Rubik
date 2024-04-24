@@ -13,3 +13,9 @@ if comandos:
             getattr(cubo, comando)()
 
 lector.guardar_txt(cubo, "textos/desarmado.txt")
+
+# Carga manual directamente de "textos/desarmado.txt"
+# lector = Lector_txt()
+# capas = lector.cargar_txt("textos/desarmado.txt")
+# if capas:
+#     cubo = Cubo(*capas)           
