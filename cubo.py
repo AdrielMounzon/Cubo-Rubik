@@ -8,6 +8,9 @@ class Cara:
     def __eq__(self, other):
         if(isinstance(other, Cara)):
             return self.color == other.color
+        
+    def __hash__(self):
+        return hash(self.color)
 
     def get_color(self):
         return self.color
@@ -21,6 +24,9 @@ class Capa:
                 return numpy.array_equal(self.caras, other.caras)
             return False
 
+    def __hash__(self):
+        return hash(tuple(hash(cara) for fila in self.caras for cara in fila))
+    
     def imprimir(self):
         for fila in self.caras:
             for cara in fila:
@@ -58,6 +64,13 @@ class Cubo:
                     return False
             return True
         return False
+    
+    def __hash__(self):
+        return hash(tuple(hash(capa) for capa in self.capas.values()))
+    
+    def __lt__(self, other):
+        if isinstance(other, Cubo):
+            return self.get_heuristica() < other.get_heuristica()
     
     def imprimir(self):
         for letra, capa in self.capas.items():
@@ -119,7 +132,7 @@ class Cubo:
     def copiar(self):
         return copy.deepcopy(self)
     
-    def heuristica(self):
+    def get_heuristica(self):
         cantidad = 0
         for clave, valor in self.capas.items():
             cantidad += self.capas[clave].piezas_desordenadas() 
